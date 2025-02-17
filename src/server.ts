@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import { createServer } from 'http';
 import { app } from './app';
 import { Server } from 'socket.io';
@@ -14,7 +16,7 @@ const io = new Server(httpServer, {
 io.on('connection', (socket) => {
   console.log(`Client connected: ${socket.id}`);
   handleSocketEvents(socket);
-});
+})
 
 httpServer.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
