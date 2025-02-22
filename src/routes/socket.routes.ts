@@ -13,16 +13,14 @@ export function handleSocketEvents(socket: Socket) {
       socket.emit('worker_created', {
         status: true,
         message: 'Worker created successfully',
-        data: worker,
-        responseDate: Date.now()
+        data: worker
       });
 
     } catch (error: any) {
       socket.emit('create_worker_error', {
         status: false,
         message: error?.message,
-        data: error,
-        responseDate: Date.now()
+        data: error
       });
     }
   });
@@ -34,15 +32,13 @@ export function handleSocketEvents(socket: Socket) {
       socket.emit('worker_updated', {
         status: true,
         message: 'Worker updated successfully',
-        data: worker,
-        responseDate: Date.now()
+        data: worker
       });
     } catch (error: any) {
       socket.emit('update_worker_error', {
         status: false,
         message: error?.message,
-        data: error,
-        responseDate: Date.now()
+        data: error
       });
     }
   });
@@ -54,61 +50,97 @@ export function handleSocketEvents(socket: Socket) {
       socket.emit('worker_deleted', {
         status: true,
         message: 'Worker deleted successfully',
-        responseDate: Date.now()
       });
 
     } catch (error: any) {
       socket.emit('delete_worker_error', {
         status: false,
-        message: error?.message,
-        data: error,
-        responseDate: Date.now()
+        message: 'Failed to delete worker',
+        data: error
       });
     }
   });
 
-  socket.on('activate_worker', async (data: { id: number }) => {
+  socket.on('activate_worker', async (id: number) => {
     try {
-      const worker = await updateWorker(data.id, {
+      const worker = await updateWorker(id, {
         status: WorkerStatus.ACTIVE
       });
 
       socket.emit('worker_activated', {
         status: true,
         message: 'Worker activated successfully',
-        data: worker,
-        responseDate: Date.now()
+        data: worker
       });
 
     } catch (error: any) {
       socket.emit('activate_worker_error', {
         status: false,
-        message: error?.message,
-        data: error,
-        responseDate: Date.now()
+        message: 'Failed to activate worker',
+        data: error
       });
     }
   });
 
-  socket.on('deactivate_worker', async (data: { id: number }) => {
+  socket.on('deactivate_worker', async (id: number) => {
     try {
-      const worker = await updateWorker(data.id, {
+      const worker = await updateWorker(id, {
         status: WorkerStatus.INACTIVE
       });
 
       socket.emit('worker_deactivated', {
         status: true,
         message: 'Worker deactivated successfully',
-        data: worker,
-        responseDate: Date.now()
+        data: worker
       });
 
     } catch (error) {
       socket.emit('deactivate_worker_error', {
         status: false,
         message: 'Failed to deactivate worker',
-        data: error,
-        responseDate: Date.now()
+        data: error
+      });
+    }
+  });
+
+  socket.on('turn_off_notifications', async (id: number) => {
+    try {
+      const worker = await updateWorker(id, {
+        notify: false
+      });
+
+      socket.emit('notifications_turned_off', {
+        status: true,
+        message: 'Notifications turned off successfully',
+        data: worker
+      });
+
+    } catch (error: any) {
+      socket.emit('turn_off_notifications_error', {
+        status: false,
+        message: 'Failed to turn off notifications',
+        data: error
+      });
+    }
+  });
+
+  socket.on('turn_on_notifications', async (id: number) => {
+    try {
+      const worker = await updateWorker(id, {
+        notify: true
+      });
+
+      socket.emit('notifications_turned_on', {
+        status: true,
+        message: 'Notifications turned on successfully',
+        data: worker
+      });
+
+    } catch (error: any) {
+      socket.emit('turn_on_notifications_error', {
+        status: false,
+        message: 'Failed to turn on notifications',
+        data: error
       });
     }
   });

@@ -80,6 +80,7 @@ export const updateWorker = async (id: number, worker: {
 }) => {
 
     const originalWorker = await getWorkerById(id);
+    console.log(id, originalWorker.id);
 
     const updatedWorker = await db.update(Workers).set({
         name: worker.name ?? originalWorker.name,
